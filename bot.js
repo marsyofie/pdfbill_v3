@@ -48,7 +48,7 @@ exports.start = async (params) => {
 
               //send telegram
               await sendTelegram(params, filenamePdf);
-              params.dependencies.functions("mail").sendPdf(filenamePdf);
+              // params.dependencies.functions("mail").sendPdf(filenamePdf);
 
               bot.sendMessage(chatId, `Sukses bos : <b>${moment().format("YYYY-MM-DD HH:mm")}</b>`, {
                 parse_mode: "HTML",
