@@ -3,7 +3,7 @@ const moment = require("moment");
 
 exports.pln = async (data, doc) => {
   // Embed a font, set the font size, and render some text
-  doc.font("Helvetica-Bold").text("STRUK PEMBAYARAN TAGIHAN LISTRIK", { align: "center" });
+  doc.font("Helvetica-Bold").fontSize(10.5).text("STRUK PEMBAYARAN TAGIHAN LISTRIK", { align: "center" });
   doc.moveDown();
 
   doc.font("Times-Roman").fontSize(9.75);
@@ -66,7 +66,7 @@ exports.pln = async (data, doc) => {
 };
 
 exports.pdam = async (data, doc) => {
-  doc.font("Helvetica-Bold").text("STRUK PEMBAYARAN PDAM", { align: "center" });
+  doc.font("Helvetica-Bold").fontSize(10.5).text("STRUK PEMBAYARAN PDAM", { align: "center" });
   doc.moveDown();
 
   doc.font("Times-Roman").fontSize(9.75);
@@ -128,7 +128,7 @@ exports.pdam = async (data, doc) => {
 };
 
 exports.bpjs = async (data, doc) => {
-  doc.font("Helvetica-Bold").text("STRUK PEMBAYARAN BPJS KESEHATAN", { align: "center" });
+  doc.font("Helvetica-Bold").fontSize(10.5).text("STRUK PEMBAYARAN BPJS KESEHATAN", { align: "center" });
   doc.moveDown();
 
   doc.font("Times-Roman").fontSize(9.75);
