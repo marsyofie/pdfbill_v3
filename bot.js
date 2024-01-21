@@ -38,11 +38,6 @@ exports.start = async (params) => {
           try {
             //checking data must greather than 1
             if (csvRow.length > 1) {
-              //force create dir
-              if (!fs.existsSync(params.config.PDF_PATH)) {
-                fs.mkdirSync(params.config.PDF_PATH, { recursive: true });
-              }
-
               //create pdf
               const filenamePdf = await createPdf(params, csvRow);
 
@@ -91,8 +86,26 @@ const filterSender = (params, senderUname) => {
   }
 };
 
+const addHorizontalRule = (doc, spaceFromEdge = 0, linesAboveAndBelow = 0.5) => {
+  doc.moveDown(linesAboveAndBelow);
+
+  doc
+    .moveTo(0 + spaceFromEdge, doc.y)
+    .lineTo(doc.page.width - spaceFromEdge, doc.y)
+    .stroke();
+
+  doc.moveDown(linesAboveAndBelow);
+
+  return doc;
+};
+
 const createPdf = async (params, datas) => {
   return new Promise(async (resolve, reject) => {
+    //force create dir
+    if (!fs.existsSync(params.config.PDF_PATH)) {
+      fs.mkdirSync(params.config.PDF_PATH, { recursive: true });
+    }
+
     let filename = `${params.config.PDF_PATH}${moment().format("YYYY-MM")}_MERGE.pdf`;
     // Create a document
     let doc = new PDFDocument({ margins: { top: 10, left: 100, right: 100, bottom: 10 } });
@@ -101,13 +114,25 @@ const createPdf = async (params, datas) => {
 
     doc.pipe(writeStream);
 
+    let content = 1;
     for (const [index, singleData] of datas.entries()) {
+      // check bills are enabled or disabled
       if (singleData.active == 1) {
         if (singleData.type === "PLN") await params.dependencies.functions("pdf").pln(singleData, doc);
         if (singleData.type === "PDAM") await params.dependencies.functions("pdf").pdam(singleData, doc);
         if (singleData.type === "BPJS") await params.dependencies.functions("pdf").bpjs(singleData, doc);
         if (singleData.type === "TELKOM") await params.dependencies.functions("pdf").telkom(singleData, doc);
-        if (index < datas.length - 1) doc.addPage();
+        addHorizontalRule(doc, 50, 1);
+
+        // 1 page 4 content and reset counter
+        if (content < 4) {
+          content += 1;
+        } else {
+          doc.addPage();
+          content = 1;
+        }
+
+        // if (index < datas.length - 1) doc.addPage();
       }
     }
 
